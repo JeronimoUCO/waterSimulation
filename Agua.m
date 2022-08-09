@@ -2,29 +2,38 @@ clear all
 
 close all
 
-a=zeros(200,200);
+#Creo las matrices constantes
+global g;
+global a;
+global posiciones;
+global vViento;
+global b;
 
+a=zeros(200,200);
+posiciones=zeros(20,2);
+
+#Muestro el estado inicial del "recipiente"
 imshow(a)
 
-anguloLanzamiento=45/180;
-v(1)=0;
+#Instancio las variables globales
 vViento=10;
 g=9.8;
 b=0.05;
-estaSubiendo=false;
-posicionx=1;
-posiciony=1;
-j=1;
 
-for i=1:100
- %i es el espacio que recorro en el eje y
+
+#Defino el comportamiento de las particulas
+function particula(iterador, posicionx, posiciony)
+  anguloLanzamiento=45/180;
+  v(1)=0;
+  estaSubiendo=false;
+  j=iterador
+
   if(!estaSubiendo)
   v(j+1)=g-b*v(j)+v(j);%Es el vector de velocidad
   posicionx=abs(floor(posicionx+v(j+1)*(sin(anguloLanzamiento))-vViento));
   posiciony=abs(floor(posiciony+v(j+1)*(cos(anguloLanzamiento))));
-  endif
-
- if(posicionx>=200 || posiciony>=200 || posicionx<=1 || posiciony<=1)
+endif
+if(posicionx>=200 || posiciony>=200 || posicionx<=1 || posiciony<=1)
   v(j)=-v(j);
   v(j+1)= -b*v(j)+v(j)+g;%Es el vector de velocidad
    if(posiciony>=200)
@@ -51,12 +60,8 @@ endif
     posiciony=abs(floor(posiciony-v(j+1)*(cos(anguloLanzamiento))));
 
   endif
-
  endif
-
-
- endif
-
+endif
  if(v<=0 & estaSubiendo)
  estaSubiendo=false;
 endif
@@ -65,10 +70,12 @@ a(posiciony,posicionx)=255;
 imshow(a);
 pause(0.0001);
 a(posiciony,posicionx)=0;
-j=j+1;
+endfunction
+
+for i=1:100
+ %i es el espacio que recorro en el eje y
+ for r=1:length(posiciones)
+   particula(i,posiciones(r,1),posiciones(r,2))
+   endfor
 endfor
-plot(v)
-
-
-
 
