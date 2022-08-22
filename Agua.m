@@ -12,27 +12,32 @@ global b;
 a=zeros(200,200);
 posiciones=zeros(20,2);
 
+posiciones(1,1)=50;
+posiciones(1,2)=50;
+posiciones(2,1)=10;
+posiciones(2,2)=20;
+posiciones(3,1)=30;
+posiciones(3,2)=200;
+
 #Muestro el estado inicial del "recipiente"
 imshow(a)
 
-#Instancio las variables globales
-vViento=10;
-g=9.8;
-b=0.05;
-
-
 #Defino el comportamiento de las particulas
 function particula(iterador, posicionx, posiciony)
+  vViento=10;
+  g=9.8;
+  b=0.05;
   anguloLanzamiento=45/180;
   v(1)=0;
   estaSubiendo=false;
-  j=iterador
+  j=iterador;
 
   if(!estaSubiendo)
   v(j+1)=g-b*v(j)+v(j);%Es el vector de velocidad
   posicionx=abs(floor(posicionx+v(j+1)*(sin(anguloLanzamiento))-vViento));
   posiciony=abs(floor(posiciony+v(j+1)*(cos(anguloLanzamiento))));
 endif
+
 if(posicionx>=200 || posiciony>=200 || posicionx<=1 || posiciony<=1)
   v(j)=-v(j);
   v(j+1)= -b*v(j)+v(j)+g;%Es el vector de velocidad
