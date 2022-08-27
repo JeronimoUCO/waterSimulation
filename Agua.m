@@ -83,34 +83,39 @@
 ##   particula(i,posiciones(r,1),posiciones(r,2))
 ##   endfor
 ##endfor
+
+#Variables globales
 global nParticulas;
 global particulas;
 recipiente = zeros(200, 200);
-nParticulas= 0;
+nParticulas= 1;
 tiempoMuestreo = 0.1;
 velocidadViento = 1;
 b = 0.05;
 g = 9.82;
 
+#Funcion que permite la creacion de particulas
 function crearParticula()
     global nParticulas;
     global particulas;
-    p = struct();
-    p.v(1) = 0;
-    p.estaSubiendo = false;
-    p.posicionx = 1;
-    p.posiciony = 1;
-
+    particulas=struct();
+    particulas(nParticulas).v(1) = 0;
+    particulas(nParticulas).estaSubiendo = false;
+    particulas(nParticulas).posicionx = 1;
+    particulas(nParticulas).posiciony = 1;
     nParticulas+=1;
-    particulas(nParticulas) = p;
 endfunction
 
+#Funcion que muestra lo que está sucediendo en el recipiente en un instante determinado
 function dibujarPantalla(instante)
     global particulas;
+    global g;
+    global b;
+    global velocidadViento;
     for i = 1:rows(particulas)
 
         if (!particulas(i).estaSubiendo)
-            particulas(i).v(intante + 1) = g - b * particulas(i).v(j) + particulas(i).v(j); %Es el vector de velocidad
+            particulas(i).v(instante + 1) = g - b * particulas(i).v(j) + particulas(i).v(j); %Es el vector de velocidad
             particulas(i).posicionx = abs(floor(particulas(i).posicionx - vViento));
             particulas(i).posiciony = abs(floor(particulas(i).posiciony + particulas(i).v(j + 1)));
             endif;
@@ -148,6 +153,7 @@ function dibujarPantalla(instante)
             imshow(recipiente)
         endfunction
 
+#Programa en funcionamiento
 for i=1:100
     crearParticula();
     dibujarPantalla(i);
