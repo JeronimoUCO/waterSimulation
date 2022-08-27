@@ -33,36 +33,36 @@
 ##  j=iterador;
 ##
 ##  if(!estaSubiendo)
-##  v(j+1)=g-b*v(j)+v(j);%Es el vector de velocidad
-##  posicionx=abs(floor(posicionx+v(j+1)*(sin(anguloLanzamiento))-vViento));
-##  posiciony=abs(floor(posiciony+v(j+1)*(cos(anguloLanzamiento))));
+##  v(instante+1)=g-b*v(instante)+v(instante);%Es el vector de velocidad
+##  posicionx=abs(floor(posicionx+v(instante+1)*(sin(anguloLanzamiento))-vViento));
+##  posiciony=abs(floor(posiciony+v(instante+1)*(cos(anguloLanzamiento))));
 ##endif
 ##
 ##if(posicionx>=200 || posiciony>=200 || posicionx<=1 || posiciony<=1)
-##  v(j)=-v(j);
-##  v(j+1)= -b*v(j)+v(j)+g;%Es el vector de velocidad
+##  v(instante)=-v(instante);
+##  v(instante+1)= -b*v(instante)+v(instante)+g;%Es el vector de velocidad
 ##   if(posiciony>=200)
 ##   posiciony=200;
-##    posicionx=abs(floor(posicionx-v(j+1)*(sin(anguloLanzamiento)))-vViento);
-##    posiciony=abs(floor(posiciony+v(j+1)*(cos(anguloLanzamiento))));
+##    posicionx=abs(floor(posicionx-v(instante+1)*(sin(anguloLanzamiento)))-vViento);
+##    posiciony=abs(floor(posiciony+v(instante+1)*(cos(anguloLanzamiento))));
 ##
 ##    if(posicionx>=200)
 ##    posiciony=200;
-##    posicionx=abs(floor(posicionx+v(j+1)*cos(anguloLanzamiento)+vViento));
-##    posiciony=abs(floor(posiciony-v(j+1)*sin(anguloLanzamiento)));
+##    posicionx=abs(floor(posicionx+v(instante+1)*cos(anguloLanzamiento)+vViento));
+##    posiciony=abs(floor(posiciony-v(instante+1)*sin(anguloLanzamiento)));
 ##    estaSubiendo=true;
 ##  endif
 ##
 ##  if(posicionx<1)
 ##    posiciony=1;
-##    posicionx=abs(floor(posicionx-v(j+1)*(sin(anguloLanzamiento)))-vViento);
-##    posiciony=abs(floor(posiciony-v(j+1)*(cos(anguloLanzamiento))));
+##    posicionx=abs(floor(posicionx-v(instante+1)*(sin(anguloLanzamiento)))-vViento);
+##    posiciony=abs(floor(posiciony-v(instante+1)*(cos(anguloLanzamiento))));
 ##endif
 ##
 ##  if(posiciony<1)
 ##    posicionx=1;
-##    posicionx=abs(floor(posicionx-v(j+1)*(sin(anguloLanzamiento)))-vViento);
-##    posiciony=abs(floor(posiciony-v(j+1)*(cos(anguloLanzamiento))));
+##    posicionx=abs(floor(posicionx-v(instante+1)*(sin(anguloLanzamiento)))-vViento);
+##    posiciony=abs(floor(posiciony-v(instante+1)*(cos(anguloLanzamiento))));
 ##
 ##  endif
 ## endif
@@ -87,10 +87,11 @@
 #Variables globales
 global nParticulas;
 global particulas;
+global recipiente;
 recipiente = zeros(200, 200);
 nParticulas= 1;
 tiempoMuestreo = 0.1;
-velocidadViento = 1;
+vViento = 1;
 b = 0.05;
 g = 9.82;
 
@@ -99,7 +100,7 @@ function crearParticula()
     global nParticulas;
     global particulas;
     particulas=struct();
-    particulas(nParticulas).v(1) = 0;
+    particulas(nParticulas).v(1) = 1;
     particulas(nParticulas).estaSubiendo = false;
     particulas(nParticulas).posicionx = 1;
     particulas(nParticulas).posiciony = 1;
@@ -111,41 +112,46 @@ function dibujarPantalla(instante)
     global particulas;
     global g;
     global b;
-    global velocidadViento;
+    global vViento;
+    global recipiente;
+
     for i = 1:rows(particulas)
 
         if (!particulas(i).estaSubiendo)
-            particulas(i).v(instante + 1) = g - b * particulas(i).v(j) + particulas(i).v(j); %Es el vector de velocidad
+          b*particulas(i).v(instante)
+            particulas(i).v(instante + 1) = g - b * particulas(i).v(instante) + particulas(i).v(instante); %Es el vector de velocidad
             particulas(i).posicionx = abs(floor(particulas(i).posicionx - vViento));
             particulas(i).posiciony = abs(floor(particulas(i).posiciony + particulas(i).v(j + 1)));
             endif;
 
             if (particulas(i).posicionx >= 200 || particulas(i).posiciony >= 200 || particulas(i).posicionx <= 1 || particulas(i).posiciony <= 1)
-                particulas(i).v(j)=-particulas(i).v(j);
-                particulas(i).v(j+1)= -b*particulas(i).v(j)+particulas(i).v(j)+g;%Es el vector de velocidad
-                
+                particulas(i).v(instante)=-particulas(i).v(instante);
+                particulas(i).v(instante+1)= -b*particulas(i).v(instante)+particulas(i).v(instante)+g;%Es el vector de velocidad
+
                 if(particulas(i).posiciony>=200)
                 particulas(i).posiciony=200;
-                particulas(i).posicionx=abs(floor(particulas(i).posicionx-v(j+1))-vViento);
-                particulas(i).posiciony=abs(floor(particulas(i).posiciony+v(j+1)));
+                particulas(i).posicionx=abs(floor(particulas(i).posicionx-v(instante+1))-vViento);
+                particulas(i).posiciony=abs(floor(particulas(i).posiciony+v(instante+1)));
                 endif
 
                 if(particulas(i).posicionx>=200)
                 particulas(i).posiciony=200;
-                particulas(i).posicionx=abs(floor(particulas(i).posicionx+v(j+1)+vViento));
-                particulas(i).posiciony=abs(floor(particulas(i).posiciony-v(j+1)));
+                particulas(i).posicionx=abs(floor(particulas(i).posicionx+v(instante+1)+vViento));
+                particulas(i).posiciony=abs(floor(particulas(i).posiciony-v(instante+1)));
                 particulas(i).estaSubiendo=true;
                 endif
-                
+
                 if(particulas(i).posicionx<1)
                 particulas(i).posiciony=1;
-                particulas(i).posicionx=abs(floor(particulas(i).posicionx-v(j+1))-vViento);
-                particulas(i).posiciony=abs(floor(particulas(i).posiciony-v(j+1)));
+                particulas(i).posicionx=abs(floor(particulas(i).posicionx-v(instante+1))-vViento);
+                particulas(i).posiciony=abs(floor(particulas(i).posiciony-v(instante+1)));
                 endif
             endif
+          endfor
+          for r=1:rows(particulas)
 
-            recipiente(particulas(i).posicionx,particulas(i).posiciony)=255;
-            endfor
+            recipiente(particulas(r).posicionx,particulas(r).posiciony)=255;
+          endfor
             imshow(recipiente)
             for i = 1:rows(particulas)
                 recipiente(particulas(i).posicionx,particulas(i).posiciony)=0;
@@ -155,6 +161,9 @@ function dibujarPantalla(instante)
 
 #Programa en funcionamiento
 for i=1:100
-    crearParticula();
+crearParticula();
+endfor
+
+for i=1:100
     dibujarPantalla(i);
 endfor
