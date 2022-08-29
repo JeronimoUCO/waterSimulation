@@ -93,11 +93,15 @@ global b;
 global vViento;
 global nParticulas;
 global tiempoMuestreo;
+global render;
+global nFotograma;
 
 particulas=struct();
+render={};
+nFotograma=1;
 recipiente = zeros(200, 200);
 nParticulas= 1;
-tiempoMuestreo = 0.001;
+tiempoMuestreo = 0.0000001;
 vViento = 1;
 b = 0.05;
 g = 9.82;
@@ -121,6 +125,8 @@ function dibujarPantalla(instante)
     global vViento;
     global recipiente;
     global tiempoMuestreo;
+    global render;
+    global nFotograma;
 
     for i = 1:rows(particulas)
         if (!particulas(i).estaSubiendo)
@@ -154,15 +160,15 @@ function dibujarPantalla(instante)
             endif
           endfor
           for r=1:columns(particulas)
-          particulas(r).posiciony
             recipiente(particulas(r).posiciony,particulas(r).posicionx)=255;
           endfor
-            imshow(recipiente)
-            pause(tiempoMuestreo)
+            render{nFotograma}=recipiente;
+            nFotograma+=1;
             for i = 1:columns(particulas)
                 recipiente(particulas(r).posiciony,particulas(r).posicionx)=0;
             endfor
-            imshow(recipiente)
+            render{nFotograma}=recipiente;
+            nFotograma+=1;
         endfunction
 
 #Programa en funcionamiento
@@ -170,6 +176,11 @@ for i=1:100
 crearParticula();
 endfor
 
-for i=1:100
+for i=1:1000
     dibujarPantalla(i);
+endfor
+
+for i=1:columns(render)
+imshow(render{i});
+pause(tiempoMuestreo);
 endfor
