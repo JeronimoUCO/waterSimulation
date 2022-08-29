@@ -88,9 +88,16 @@
 global nParticulas;
 global particulas;
 global recipiente;
+global g;
+global b;
+global vViento;
+global nParticulas;
+global tiempoMuestreo;
+
+particulas=struct();
 recipiente = zeros(200, 200);
 nParticulas= 1;
-tiempoMuestreo = 0.1;
+tiempoMuestreo = 0.001;
 vViento = 1;
 b = 0.05;
 g = 9.82;
@@ -99,7 +106,6 @@ g = 9.82;
 function crearParticula()
     global nParticulas;
     global particulas;
-    particulas=struct();
     particulas(nParticulas).v(1) = 1;
     particulas(nParticulas).estaSubiendo = false;
     particulas(nParticulas).posicionx = 1;
@@ -114,14 +120,13 @@ function dibujarPantalla(instante)
     global b;
     global vViento;
     global recipiente;
+    global tiempoMuestreo;
 
     for i = 1:rows(particulas)
-
         if (!particulas(i).estaSubiendo)
-          b*particulas(i).v(instante)
-            particulas(i).v(instante + 1) = g - b * particulas(i).v(instante) + particulas(i).v(instante); %Es el vector de velocidad
-            particulas(i).posicionx = abs(floor(particulas(i).posicionx - vViento));
-            particulas(i).posiciony = abs(floor(particulas(i).posiciony + particulas(i).v(j + 1)));
+            particulas(i).v(instante+1) = g - b * particulas(i).v(instante) + particulas(i).v(instante); %Es el vector de velocidad
+            particulas(i).posicionxs = abs(floor(particulas(i).posicionx - vViento));
+            particulas(i).posiciony = abs(floor(particulas(i).posiciony + particulas(i).v(instante+1)));
             endif;
 
             if (particulas(i).posicionx >= 200 || particulas(i).posiciony >= 200 || particulas(i).posicionx <= 1 || particulas(i).posiciony <= 1)
@@ -130,31 +135,32 @@ function dibujarPantalla(instante)
 
                 if(particulas(i).posiciony>=200)
                 particulas(i).posiciony=200;
-                particulas(i).posicionx=abs(floor(particulas(i).posicionx-v(instante+1))-vViento);
-                particulas(i).posiciony=abs(floor(particulas(i).posiciony+v(instante+1)));
+                particulas(i).posicionx=abs(floor(particulas(i).posicionx-particulas(i).v(instante+1))-vViento);
+                particulas(i).posiciony=abs(floor(particulas(i).posiciony+particulas(i).v(instante+1)));
                 endif
 
                 if(particulas(i).posicionx>=200)
                 particulas(i).posiciony=200;
-                particulas(i).posicionx=abs(floor(particulas(i).posicionx+v(instante+1)+vViento));
-                particulas(i).posiciony=abs(floor(particulas(i).posiciony-v(instante+1)));
+                particulas(i).posicionx=abs(floor(particulas(i).posicionx+particulas(i).v(instante+1)+vViento));
+                particulas(i).posiciony=abs(floor(particulas(i).posiciony-particulas(i).v(instante+1)));
                 particulas(i).estaSubiendo=true;
                 endif
 
                 if(particulas(i).posicionx<1)
                 particulas(i).posiciony=1;
-                particulas(i).posicionx=abs(floor(particulas(i).posicionx-v(instante+1))-vViento);
-                particulas(i).posiciony=abs(floor(particulas(i).posiciony-v(instante+1)));
+                particulas(i).posicionx=abs(floor(particulas(i).posicionx-particulas(i).v(instante+1))-vViento);
+                particulas(i).posiciony=abs(floor(particulas(i).posiciony-particulas(i).v(instante+1)));
                 endif
             endif
           endfor
-          for r=1:rows(particulas)
-
-            recipiente(particulas(r).posicionx,particulas(r).posiciony)=255;
+          for r=1:columns(particulas)
+          particulas(r).posiciony
+            recipiente(particulas(r).posiciony,particulas(r).posicionx)=255;
           endfor
             imshow(recipiente)
-            for i = 1:rows(particulas)
-                recipiente(particulas(i).posicionx,particulas(i).posiciony)=0;
+            pause(tiempoMuestreo)
+            for i = 1:columns(particulas)
+                recipiente(particulas(r).posiciony,particulas(r).posicionx)=0;
             endfor
             imshow(recipiente)
         endfunction
