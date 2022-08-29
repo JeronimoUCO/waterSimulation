@@ -128,10 +128,10 @@ function dibujarPantalla(instante)
     global render;
     global nFotograma;
 
-    for i = 1:rows(particulas)
+    for i = 1:columns(particulas)
         if (!particulas(i).estaSubiendo)
             particulas(i).v(instante+1) = g - b * particulas(i).v(instante) + particulas(i).v(instante); %Es el vector de velocidad
-            particulas(i).posicionxs = abs(floor(particulas(i).posicionx - vViento));
+            particulas(i).posicionx = abs(floor(particulas(i).posicionx - vViento));
             particulas(i).posiciony = abs(floor(particulas(i).posiciony + particulas(i).v(instante+1)));
             endif;
 
@@ -152,23 +152,23 @@ function dibujarPantalla(instante)
                 particulas(i).estaSubiendo=true;
                 endif
 
-                if(particulas(i).posicionx<1)
+                if(particulas(i).posicionx<=1)
                 particulas(i).posiciony=1;
                 particulas(i).posicionx=abs(floor(particulas(i).posicionx-particulas(i).v(instante+1))-vViento);
                 particulas(i).posiciony=abs(floor(particulas(i).posiciony-particulas(i).v(instante+1)));
                 endif
             endif
-          endfor
-          for r=1:columns(particulas)
-            recipiente(particulas(r).posiciony,particulas(r).posicionx)=255;
-          endfor
-            render{nFotograma}=recipiente;
-            nFotograma+=1;
-            for i = 1:columns(particulas)
-                recipiente(particulas(r).posiciony,particulas(r).posicionx)=0;
-            endfor
-            render{nFotograma}=recipiente;
-            nFotograma+=1;
+        endfor
+        for r=1:columns(particulas)
+           recipiente(particulas(r).posiciony,particulas(r).posicionx)=255;
+        endfor
+        render{nFotograma}=recipiente;
+        nFotograma+=1;
+        for i = 1:columns(particulas)
+            recipiente(particulas(r).posiciony,particulas(r).posicionx)=0;
+        endfor
+        render{nFotograma}=recipiente;
+        nFotograma+=1;
         endfunction
 
 #Programa en funcionamiento
